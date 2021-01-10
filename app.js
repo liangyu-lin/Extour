@@ -5,9 +5,11 @@ const Tour = require('./models/tour');
 const methodOverRide = require('method-override');
 const ejsMate = require('ejs-mate');
 const Joi = require('joi');
-const {tourSchema} = require('./schemas.js');
+const {tourSchema, reviewSchema} = require('./schemas.js');
+
 const catchAsync = require('./utils/catchAsync');
 const ExpressErorr = require('./utils/ExpressError');
+const Review =require('./models/review')
 
 mongoose.connect('mongodb://localhost:27017/extour', {
     useNewUrlParser: true,
@@ -48,6 +50,18 @@ const validateTour = (req, res, next) => {
 
 }
 
+const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+        
+  
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressErorr(msg, 400)
+    } else {
+        next();
+    }
+}
+
 app.get('/', (req, res) => {
     res.render('home')
 });
@@ -74,7 +88,7 @@ app.post('/tours', validateTour, catchAsync(async (req, res, next) => {
 }));
 
 app.get('/tours/:id', catchAsync(async (req, res) => {
-    const tour = await Tour.findById(req.params.id)
+    const tour = await Tour.findById(req.params.id).populate('reviews');
     res.render('tours/show', {
         tour
     });
@@ -106,6 +120,17 @@ app.delete('/tours/:id', catchAsync(async (req, res) => {
     res.redirect('/tours');
 }));
 
+app.post('/tours/:id/reviews', validateReview, catchAsync(async(req,res)=> {
+    const tour = await Tour.findById(req.params.id);
+    const review = new Review(req.body.review);
+       tour.reviews.push(review);
+       
+    await review.save();
+    await tour.save();
+    res.redirect(`/tours/${tour._id}`)
+}))
+
+
 app.all('*', (req, res, next) => {
     next(new ExpressErorr('Page Not Found', 404));
 })
@@ -115,9 +140,7 @@ app.use((err, req, res, next) => {
         statusCode = 500
     } = err;
     if (!err.message) err.message = 'Oh No! Something Went Wrong!'
-    res.status(statusCode).render('error', {
-        err
-    });
+    res.status(statusCode).render('error', { err });
 });
 
 
