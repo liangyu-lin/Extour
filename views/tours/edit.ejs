@@ -1,0 +1,63 @@
+<% layout('layouts/boilerplate')%>
+
+
+<div class="row">
+    <form action="/tours/<%=tour._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+        <h1 class="text-center">Edit Tour</h1>
+        <div class="col-6 offset-3">
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="tour[title]" value="<%= tour.title %>"
+                    required>
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="tour[location]" required
+                    value="<%= tour.location %>">
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="image">Image Url</label>
+                <input class="form-control" type="text" id="location" name="tour[image]" value="<%= tour.image %>"
+                    required>
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="price">Tour Price</label>
+                <div class="input-group ">
+                    <span class="input-group-text" id="price-label">$</span>
+                    <input type="text" class="form-control" id="price" placeholder="0.00" aria-label="price"
+                        aria-describedby="price-label" name="tour[price]" required value="<%= tour.price %>">
+                    <div class="valid-feedback">
+                        Looks Good!
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" type="text" id="description" name="tour[description]"
+                    required><%= tour.description %></textarea>
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Update Tour</button>
+            </div>
+
+
+
+    </form>
+
+    <a href="/tours/<%=tour._id%>">Back To Tour</a>
+
+</div>
+</div>
