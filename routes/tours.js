@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
-const {
-    tourSchema
-} = require('../schemas.js');
+const {tourSchema} = require('../schemas.js');
+const {isLoggedIn} = require ('../middleware.js');
+
 const ExpressErorr = require('../utils/ExpressError');
 const Tour = require('../models/tour');
 
@@ -30,11 +30,12 @@ router.get('/', catchAsync(async (req, res) => {
     });
 }));
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
+
     res.render('tours/new')
 });
 
-router.post('/', validateTour, catchAsync(async (req, res, next) => {
+router.post('/', isLoggedIn, validateTour, catchAsync(async (req, res, next) => {
 
     //   if(!req.body.tour) throw new ExpressError('Invalid Tour Data', 400);
     const tour = new Tour(req.body.tour);
@@ -53,7 +54,7 @@ router.get('/:id', catchAsync(async (req, res) => {
     res.render('tours/show', { tour });
 }));
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const tour = await Tour.findById(req.params.id)
       if (!tour) {
           req.flash('error', 'Cannot find the tour you are searching for!')
@@ -65,7 +66,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
 }));
 
 
-router.put('/:id', catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const {
         id
     } = req.params;
@@ -76,7 +77,7 @@ router.put('/:id', catchAsync(async (req, res) => {
     res.redirect(`/tours/${tour._id}`)
 }));
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Tour.findByIdAndDelete(id);
     res.redirect('/tours');

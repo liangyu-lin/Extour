@@ -5,21 +5,24 @@
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+               
                     <a class="nav-link active" href="/">Home</a>
-                </li>
-                <li class="nav-item">
+                             
                     <a class="nav-link" href="/tours">Tours</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/tours/new">New Tour</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-            </ul>
+           
+                    <a class="nav-link" href="/tours/new">Create Your Tour</a>
+              
+            </div>
+                 <div class="navbar-nav ml-auto">
+                     <% if (!currentUser) { %>
+                     <a class="nav-link" href="/login">Login</a>
+                     <a class="nav-link" href="/register">Register</a>
+                     <% } else { %>
+                     <a class="nav-link" href="/logout">Logout</a>
+                     <% } %>
+                 </div>
         </div>
     </div>
 </nav>
