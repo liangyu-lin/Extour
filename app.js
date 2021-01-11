@@ -1,20 +1,21 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
-const Tour = require('./models/tour');
-const methodOverRide = require('method-override');
+const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const Joi = require('joi');
-const {tourSchema, reviewSchema} = require('./schemas.js');
-
-const catchAsync = require('./utils/catchAsync');
+const session = require('express-session');
+const flash = require('connect-flash');
 const ExpressErorr = require('./utils/ExpressError');
-const Review =require('./models/review')
+const methodOverRide = require('method-override');
+
+
+const tours = require ('./routes/tours');
+const reviews = require('./routes/reviews');
 
 mongoose.connect('mongodb://localhost:27017/extour', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 
 const db = mongoose.connection;
@@ -25,9 +26,6 @@ db.once("open", () => {
 
 const app = express();
 
-// const dir = path.join(__dirname, 'public');
-
-// app.use(express.static(dir));
 
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
@@ -39,109 +37,28 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(methodOverRide('_method'));
+app.use(express.static(path.join(__dirname, 'public')))
 
-
-
-const validateTour = (req, res, next) => {
- 
-    const {error} = tourSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressErorr(msg, 400)
-    } else {
-        next();
+const sessionConfig = {
+    secret: 'thisshouldbeabetter secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
     }
 
 }
+app.use(session(sessionConfig))
+app.use(flash());
 
-const validateReview = (req, res, next) => {
-    const {error} = reviewSchema.validate(req.body);
-        
-  
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressErorr(msg, 400)
-    } else {
-        next();
-    }
-}
+
+app.use('/tours', tours)
+app.use('/tours/:id/reviews', reviews)
 
 app.get('/', (req, res) => {
     res.render('home')
 });
-
-app.get('/tours', catchAsync(async (req, res) => {
-    const tours = await Tour.find({});
-    res.render('tours/index', {
-        tours
-    });
-}));
-
-app.get('/tours/new', (req, res) => {
-    res.render('tours/new')
-});
-
-app.post('/tours', validateTour, catchAsync(async (req, res, next) => {
-    //   if(!req.body.tour) throw new ExpressError('Invalid Tour Data', 400);
-
-
-    const tour = new Tour(req.body.tour);
-    await tour.save();
-    res.redirect(`/tours/${tour._id}`)
-
-}));
-
-app.get('/tours/:id', catchAsync(async (req, res) => {
-    const tour = await Tour.findById(req.params.id).populate('reviews');
-    res.render('tours/show', {
-        tour
-    });
-}));
-
-app.get('/tours/:id/edit', catchAsync(async (req, res) => {
-    const tour = await Tour.findById(req.params.id)
-    res.render('tours/edit', {
-        tour
-    });
-}));
-
-
-app.put('/tours/:id', catchAsync(async (req, res) => {
-    const {
-        id
-    } = req.params;
-    const tour = await Tour.findByIdAndUpdate(id, {
-        ...req.body.tour
-    })
-    res.redirect(`/tours/${tour._id}`)
-}));
-
-app.delete('/tours/:id', catchAsync(async (req, res) => {
-    const {
-        id
-    } = req.params;
-    await Tour.findByIdAndDelete(id);
-    res.redirect('/tours');
-}));
-
-app.post('/tours/:id/reviews', validateReview, catchAsync(async(req,res)=> {
-    const tour = await Tour.findById(req.params.id);
-    const review = new Review(req.body.review);
-       tour.reviews.push(review);
-       
-    await review.save();
-    await tour.save();
-    res.redirect(`/tours/${tour._id}`)
-}))
-
-
-
-app.delete('/tours/:id/reviews/:reviewId', catchAsync(async (req,res)=>{
-    const {id, reviewId} = req.params;
-    await Tour.findByIdAndUpdate(id, {$pull:  {reviews: reviewId}})
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/tours/${id}`);
- }));
 
 
 
