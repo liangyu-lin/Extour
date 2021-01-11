@@ -25,6 +25,10 @@ db.once("open", () => {
 
 const app = express();
 
+// const dir = path.join(__dirname, 'public');
+
+// app.use(express.static(dir));
+
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -129,6 +133,16 @@ app.post('/tours/:id/reviews', validateReview, catchAsync(async(req,res)=> {
     await tour.save();
     res.redirect(`/tours/${tour._id}`)
 }))
+
+
+
+app.delete('/tours/:id/reviews/:reviewId', catchAsync(async (req,res)=>{
+    const {id, reviewId} = req.params;
+    await Tour.findByIdAndUpdate(id, {$pull:  {reviews: reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/tours/${id}`);
+ }));
+
 
 
 app.all('*', (req, res, next) => {

@@ -30,13 +30,13 @@ for (let i = 0; i<50; i++){
     const tour = new Tour({
         location: `${cities[random1000].city}, ${cities[random1000].province_name} `,
         title: `${sample(descriptors)} ${sample(places)}`,
-        image: '../views/images/2.jpg',
+        image: 'https://reloadvisor.org/wp-content/uploads/2019/10/Canada-ReloAdvisor.org_.jpg',
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam repellat explicabo magnam et vitae laboriosam nesciunt aliquam. Tempora corporis quod voluptas saepe et totam odit libero dignissimos consequatur, asperiores impedit.',
         price
 
     })
 
-    await tour.save();
+    await Tour.save();
 }
 }
 
