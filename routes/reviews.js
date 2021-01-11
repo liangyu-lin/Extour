@@ -33,6 +33,7 @@ router.post('/', validateReview, catchAsync(async (req, res) => {
 
     await review.save();
     await tour.save();
+    req.flash('success', 'Successfully created a new review!')
     res.redirect(`/tours/${tour._id}`)
 }))
 
@@ -49,6 +50,7 @@ router.delete('/:reviewId', catchAsync(async (req, res) => {
         }
     })
     await Review.findByIdAndDelete(reviewId);
+    req.flash('success', 'Successfully deleted a review!')
     res.redirect(`/tours/${id}`);
 }));
 
