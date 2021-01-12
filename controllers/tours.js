@@ -1,0 +1,84 @@
+const Tour = require('../models/tour');
+module.exports.index = async (req, res) => {
+    const tours = await Tour.find({});
+    res.render('tours/index', {
+        tours
+    });
+}
+
+
+module.exports.renderNewForm = (req, res) => {
+
+    res.render('tours/new')
+}
+
+
+module.exports.createTour = async (req, res, next) => {
+
+    const tour = new Tour(req.body.tour);
+    tour.author = req.user._id;
+    await tour.save();
+    req.flash('success', 'Successfully made a new tour!');
+    res.redirect(`/tours/${tour._id}`)
+
+}
+
+
+module.exports.showTour = async (req, res) => {
+    const tour = await Tour.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author');
+
+
+    if (!tour) {
+        req.flash('error', 'Cannot find the tour you are searching for!')
+        return res.redirect('/tours');
+    }
+    res.render('tours/show', {
+        tour
+    });
+}
+
+
+module.exports.renderEditForm = async (req, res) => {
+
+    const {
+        id
+    } = req.params;
+    const tour = await Tour.findById(id)
+
+    if (!tour) {
+        req.flash('error', 'Cannot find the tour you are searching for!')
+        return res.redirect('/tours');
+    }
+
+    res.render('tours/edit', {
+        tour
+    });
+}
+
+
+module.exports.updateTour = async (req, res) => {
+
+    const {
+        id
+    } = req.params;
+
+    const tour = await Tour.findByIdAndUpdate(id, {
+        ...req.body.tour
+    })
+    req.flash('success', 'Successfully updated tour!');
+    res.redirect(`/tours/${tour._id}`)
+}
+
+
+module.exports.deleteTour = async (req, res) => {
+    const {
+        id
+    } = req.params;
+    await Tour.findByIdAndDelete(id);
+    res.redirect('/tours');
+}
