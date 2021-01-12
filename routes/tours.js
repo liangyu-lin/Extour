@@ -12,22 +12,18 @@ const {
 
 const Tour = require('../models/tour');
 
-
-
-
-router.get('/', catchAsync(tours.index));
+router.route('/')
+    .get(catchAsync(tours.index))
+    .post(isLoggedIn, validateTour, catchAsync(tours.createTour))
 
 router.get('/new', isLoggedIn, tours.renderNewForm);
 
-router.post('/', isLoggedIn, validateTour, catchAsync(tours.createTour));
-
-router.get('/:id', catchAsync(tours.showTour));
+router.route('/:id')
+    .get(catchAsync(tours.showTour))
+    .put(isLoggedIn, isAuthor, catchAsync(tours.updateTour))
+    .delete(isLoggedIn, isAuthor, catchAsync(tours.deleteTour))
 
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(tours.renderEditForm));
 
-
-router.put('/:id', isLoggedIn, isAuthor, catchAsync(tours.updateTour));
-
-router.delete('/:id', isLoggedIn, isAuthor, catchAsync(tours.deleteTour));
 
 module.exports = router;
