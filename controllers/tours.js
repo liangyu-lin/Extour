@@ -74,7 +74,13 @@ module.exports.updateTour = async (req, res) => {
 
     const tour = await Tour.findByIdAndUpdate(id, {
         ...req.body.tour
-    })
+    });
+    const imgs = req.files.map(f => ({
+        url: f.path,
+        filename: f.filename
+    }));
+       tour.images.push(...imgs);
+       await tour.save()
     req.flash('success', 'Successfully updated tour!');
     res.redirect(`/tours/${tour._id}`)
 }

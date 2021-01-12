@@ -25,7 +25,7 @@ router.get('/new', isLoggedIn, tours.renderNewForm);
 
 router.route('/:id')
     .get(catchAsync(tours.showTour))
-    .put(isLoggedIn, isAuthor, catchAsync(tours.updateTour))
+    .put(isLoggedIn, isAuthor, upload.array('image'), catchAsync(tours.updateTour))
     .delete(isLoggedIn, isAuthor, catchAsync(tours.deleteTour))
 
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(tours.renderEditForm));

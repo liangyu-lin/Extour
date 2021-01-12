@@ -27,9 +27,24 @@ for (let i = 0; i<50; i++){
         author: '5ffc32d826e4fa3b18aa9f88',
         location: `${cities[random1000].city}, ${cities[random1000].province_name} `,
         title: `${sample(descriptors)} ${sample(places)}`,
-        image: 'https://reloadvisor.org/wp-content/uploads/2019/10/Canada-ReloAdvisor.org_.jpg',
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam repellat explicabo magnam et vitae laboriosam nesciunt aliquam. Tempora corporis quod voluptas saepe et totam odit libero dignissimos consequatur, asperiores impedit.',
-        price
+        price,
+        images: [
+                {
+                   
+                    url: 'https://res.cloudinary.com/dh1xlb7vs/image/upload/v1610487878/Extour/k1yxizye6usvr82raplt.jpg',
+                    filename: 'Extour/k1yxizye6usvr82raplt'
+                }, {
+                  
+                    url: 'https://res.cloudinary.com/dh1xlb7vs/image/upload/v1610487878/Extour/wswxdyla13kblvocirs7.jpg',
+                    filename: 'Extour/wswxdyla13kblvocirs7'
+                }, {
+                    
+                    url: 'https://res.cloudinary.com/dh1xlb7vs/image/upload/v1610487879/Extour/j8hmflrmrlduovrqclxu.jpg',
+                    filename: 'Extour/j8hmflrmrlduovrqclxu'
+                }
+
+        ]
 
     })
 

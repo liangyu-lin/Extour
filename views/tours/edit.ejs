@@ -2,7 +2,7 @@
 
 
 <div class="row">
-    <form action="/tours/<%=tour._id%>?_method=PUT" method="POST" novalidate class="validated-form">
+    <form action="/tours/<%=tour._id%>?_method=PUT" method="POST" novalidate class="validated-form" enctype="multipart/form-data">
         <h1 class="text-center">Edit Tour</h1>
         <div class="col-6 offset-3">
             <div class="mb-3">
@@ -23,12 +23,8 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="image">Image Url</label>
-                <input class="form-control" type="text" id="location" name="tour[image]" value="<%= tour.image %>"
-                    required>
-                <div class="valid-feedback">
-                    Looks Good!
-                </div>
+                <label class="form-label" for="image">Upload More Images</label>
+               <input type="file" name="image" id="image" multiple>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="price">Tour Price</label>
