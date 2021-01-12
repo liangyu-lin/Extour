@@ -3,10 +3,6 @@ const cities = require('./cities')
 const {places, descriptors} = require('./seedHelpers')
 const Tour = require('../models/tour');
 
-response.cookie('cookie2', 'value2', {
-    sameSite: 'none',
-    secure: true
-});
 
 mongoose.connect('mongodb://localhost:27017/extour', {
     useNewUrlParser: true,
@@ -28,6 +24,7 @@ for (let i = 0; i<50; i++){
     const random1000 =  Math.floor(Math.random()*1000);
     const price = Math.floor(Math.random()*300) + 50
     const tour = new Tour({
+        author: '5ffc32d826e4fa3b18aa9f88',
         location: `${cities[random1000].city}, ${cities[random1000].province_name} `,
         title: `${sample(descriptors)} ${sample(places)}`,
         image: 'https://reloadvisor.org/wp-content/uploads/2019/10/Canada-ReloAdvisor.org_.jpg',
@@ -36,7 +33,7 @@ for (let i = 0; i<50; i++){
 
     })
 
-    await Tour.save();
+    await tour.save();
 }
 }
 
