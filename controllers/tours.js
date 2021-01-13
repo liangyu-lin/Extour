@@ -1,8 +1,12 @@
 const Tour = require('../models/tour');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
-mbxGeocoding({accessToken: mapBoxToken});
-const geocoder = mbxGeocoding({ accessToken: mapBoxToken});
+mbxGeocoding({
+    accessToken: mapBoxToken
+});
+const geocoder = mbxGeocoding({
+    accessToken: mapBoxToken
+});
 
 
 
@@ -25,18 +29,19 @@ module.exports.createTour = async (req, res, next) => {
         query: req.body.tour.location,
         limit: 1
     }).send()
-    res.send(geoData.body.features[0].geometry.coordinates);
-  
-    // const tour = new Tour(req.body.tour);
-    // tour.images = req.files.map(f => ({
-    //     url: f.path,
-    //     filename: f.filename
-    // }))
-    // tour.author = req.user._id;
-    // await tour.save();
-    // console.log(tour)
-    // req.flash('success', 'Successfully made a new tour!');
-    // res.redirect(`/tours/${tour._id}`)
+
+
+    const tour = new Tour(req.body.tour);
+    tour.geometry = geoData.body.features[0].geometry;
+    tour.images = req.files.map(f => ({
+        url: f.path,
+        filename: f.filename
+    }))
+    tour.author = req.user._id;
+    await tour.save();
+    console.log(tour)
+    req.flash('success', 'Successfully made a new tour!');
+    res.redirect(`/tours/${tour._id}`)
 
 }
 
@@ -91,8 +96,8 @@ module.exports.updateTour = async (req, res) => {
         url: f.path,
         filename: f.filename
     }));
-       tour.images.push(...imgs);
-       await tour.save()
+    tour.images.push(...imgs);
+    await tour.save()
     req.flash('success', 'Successfully updated tour!');
     res.redirect(`/tours/${tour._id}`)
 }
