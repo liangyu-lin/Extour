@@ -1,1 +1,1 @@
-# Extour is a tourism web app for users to host their own tours for consumers to travel and visit local tourist attractions. This web app is a practice model built on colte's web dev bootcamp using node.js libraries and bootstrap 5.
+# Extour is a tourism web app for users to host their own tours for consumers to travel and visit local tourist attractions. This web app is a practice model built on Colt Steele's web dev bootcamp using node.js libraries and bootstrap 5.
