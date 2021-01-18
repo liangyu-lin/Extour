@@ -1,4 +1,5 @@
 const Tour = require('../models/tour');
+const {cloudinary} = require('../cloudinary');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
 mbxGeocoding({
@@ -7,6 +8,7 @@ mbxGeocoding({
 const geocoder = mbxGeocoding({
     accessToken: mapBoxToken
 });
+
 
 
 
@@ -98,6 +100,13 @@ module.exports.updateTour = async (req, res) => {
     }));
     tour.images.push(...imgs);
     await tour.save()
+    if(req.body.deleteImages){
+        for(let filename of req.body.deleteImages){
+           await cloudinary.uploader.destroy(filename);
+        }
+ await tour.updateOne({$pull: {images: {filename: {$in: req.body.deleteImages}}}})
+    }
+   
     req.flash('success', 'Successfully updated tour!');
     res.redirect(`/tours/${tour._id}`)
 }
