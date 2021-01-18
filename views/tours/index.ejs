@@ -1,12 +1,12 @@
 <% layout('layouts/boilerplate')%>
 <div id="cluster-map"></div>
-    <h1>All Tours</h1>
+    <h1 class="mt-5">All Tours</h1>
     <div>
         <a href="/tours/new">Create a New Tour</a>
     </div>
 
         <% for (let tour of tours)  {%>
-          <div class="card mb-3">
+          <div class="card mt-3 mb-3">
               <div class="row" >
                   <div class="col-md-4">
                      <% if(tour.images.length) {%>
@@ -21,7 +21,7 @@
                   <div class="col-md-8">
                       <div class="card-body">
                           <h5 class="card-title"><%=tour.title%></h5>
-                          <h5 class="card-title"><%=tour.properties.popUpMarkup%></h5>
+                          
                           <p class="card-text"><%=tour.description%></p>
                           <p class="card-text"><small class="text-muted"><%=tour.location%></small></p>
                           <a class="btn btn-primary" href="/tours/<%=tour._id%>">View <%=tour.title%></a>

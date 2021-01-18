@@ -20,7 +20,7 @@ const sample = (array)=> array[Math.floor(Math.random() * array.length)];
 
 const seedDB = async ()=>{
     await Tour.deleteMany({});
-for (let i = 0; i<300; i++){
+for (let i = 0; i<250; i++){
     const random1000 =  Math.floor(Math.random()*1000);
     const price = Math.floor(Math.random()*300) + 50
     const tour = new Tour({

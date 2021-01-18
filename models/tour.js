@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const Review = require('./review');
 const Schema = mongoose.Schema;
-const opts = {
-    toJSON: { virtuals: true }
-};
+
 
 const ImageSchema = new Schema({
 
@@ -15,6 +13,9 @@ const ImageSchema = new Schema({
 ImageSchema.virtual('thumbnail').get(function (){
    return this.url.replace('/upload', '/upload/w_200');
 });
+
+    const opts = { toJSON: { virtuals: true } };
+    
 
 const TourSchema = new Schema({
     title: String,
@@ -35,21 +36,22 @@ const TourSchema = new Schema({
     location: String,
     author: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User'
     },
     reviews: [{
         type: Schema.Types.ObjectId,
-        ref: "Review"
+        ref: 'Review'
     }],
 
 }, opts);
 
 
-TourSchema.virtual('properties.popUpMarkup').get(function () {
-    return `<a href="/tours/${this._id}">${this.title}</a>
-    <p>${this.description.substring(0,20)}...</p>`
-    
-});
+	TourSchema.virtual('properties.popUpMarkup').get(function () {
+	    return `
+    <strong><a href="/tours/${this._id}">${this.title}</a><strong>
+    <p>${this.description.substring(0, 20)}...</p>`
+	});
+
 
 
 
