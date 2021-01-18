@@ -2,7 +2,7 @@ if (process.env.NODE_ENV !== "production"){
     require('dotenv').config();
 }
 
-console.log(process.env.SECRET)
+
 
 const express = require('express');
 const path = require('path');
@@ -24,8 +24,11 @@ const usersRoutes = require('./routes/users');
 const toursRoutes = require ('./routes/tours');
 const reviewsRoutes = require('./routes/reviews');
 
+const MongoDBStore = require("connect-mongo")(session);
 
-mongoose.connect('mongodb://localhost:27017/extour', {
+ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/extour';
+
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
@@ -54,9 +57,22 @@ app.use(methodOverRide('_method'));
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(mongoSanitize())
 
+const secret = process.env.SECRET || 'thisshouldbeabetter secret'
+
+const store = new MongoDBStore({
+    url: dbUrl,
+    secret,
+    touchAfter: 24 * 3600
+});
+
+store.on("error", function(e){
+    console.log("Session store error", e)
+})
+
 const sessionConfig = {
+    store,
     name:'session',
-    secret: 'thisshouldbeabetter secret',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -117,3 +133,5 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
     console.log("listen on port 3000")
 });
+
+
